@@ -11,9 +11,14 @@ import reactor.core.publisher.Flux
 class ServerController(
     val kitchenService: KitchenService
 ) {
-
     @GetMapping(value = ["/server/dishes"], produces = [MediaType.TEXT_EVENT_STREAM_VALUE])
     fun serveDishes(): Flux<Dish> {
         return kitchenService.getDishes()
+    }
+
+    @GetMapping(value = ["/served-dishes"], produces = [MediaType.TEXT_EVENT_STREAM_VALUE])
+    fun deliverDishes(): Flux<Dish> {
+        return kitchenService.getDishes()
+            .map {dish -> Dish.deliver(dish)}
     }
 }
